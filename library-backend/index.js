@@ -131,9 +131,14 @@ const resolvers = {
     authorCount: () => authors.length,
     allBooks: () => books,
     allAuthors: () => {
-      return authors.map(author => ({ ...author, bookCount: () => (
-        books.filter(book => book.author === author.name).length
-      ) }))
+      return authors.map(author => ({ 
+        ...author, 
+        bookCount: () => (
+          books
+            .filter(book => book.author === author.name)
+            .length
+        ) 
+      }))
     } 
   },
 }
