@@ -1,13 +1,19 @@
 import { useState } from "react"
+import { useMutation } from "@apollo/client/react"
+import { EDIT_BORN } from "../queries"
 
 const BornForm = () => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
+  const [editBorn] = useMutation(EDIT_BORN)
 
   const submit = (e) => {
     e.preventDefault()
 
-    console.log('Update birthyear')
+    editBorn({ variables: { 
+      name, 
+      born: +born, 
+    } })
 
     setName('')
     setBorn('')
