@@ -48,6 +48,7 @@ export const EDIT_BORN = gql`
     editAuthor(name: $name, setBornTo: $born) {
       name
       born
+      id
     }
   }
 `
