@@ -18,6 +18,7 @@ const query = gql`
       name
       born
       id
+      bookCount
     }
   }
 `
