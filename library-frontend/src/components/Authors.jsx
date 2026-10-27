@@ -1,3 +1,4 @@
+import BornForm from "./BornForm"
 import { useQuery } from "@apollo/client/react"
 import { ALL_AUTHORS } from "../queries"
 
@@ -33,6 +34,8 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      <BornForm />
     </div>
   )
 }
