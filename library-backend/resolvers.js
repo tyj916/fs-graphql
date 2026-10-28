@@ -77,8 +77,28 @@ const resolvers = {
       })
       return savedBook.populate('author')
     },
-    editAuthor: (root, args) => {
-      // tba
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name })
+
+      if (!author) {
+        return null
+      }
+
+      author.born = args.setBornTo
+
+      try {
+        await author.save()
+      } catch (error) {
+        throw new GraphQLError(`Failed to edit birth year: ${error.message}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error
+          }
+        })
+      }
+      
+      return author
     }
   }
 }
