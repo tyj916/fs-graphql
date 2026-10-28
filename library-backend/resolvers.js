@@ -53,24 +53,6 @@ const resolvers = {
     addBook: async (root, args) => {
       const { title, author: authorName } = args
 
-      if (title.length < 5) {
-        throw new GraphQLError(`Book title too short: ${title}`, {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: title
-          }
-        })
-      }
-
-      if (authorName.length < 5) {
-        throw new GraphQLError(`Author name too short: ${authorName}`, {
-          extensions: {
-            code: 'BAD_USER_INPUT',
-            invalidArgs: authorName
-          }
-        })
-      }
-
       const bookExists = await Book.exists({ title })
 
       if (bookExists) {
