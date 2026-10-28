@@ -20,18 +20,11 @@ const resolvers = {
     allBooks: async (root, args) => {
       const { author, genre } = args
       const allBooks = await Book.find({}).populate('author')
-    
-      if (!(author || genre)) {
-        return allBooks
-      }
 
-      if (author) {
-        return allBooks.filter(book => book.author.name === author)
-      }
-
-      if (genre) {
-        return allBooks.filter(book => book.genres.includes(genre))
-      }
+      return allBooks.filter(book =>
+        (!author || book.author.name === author) &&
+        (!genre || book.genres.includes(genre))
+      )
     },
     allAuthors: async () => {
       return Author.find({})
