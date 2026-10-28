@@ -10,7 +10,15 @@ const getAuthor = async (name) => {
   }
 
   const newAuthor = new Author({ name })
-  return await newAuthor.save()
+  return await newAuthor.save().catch(error => {
+    throw new GraphQLError(`Failed to create author: ${error.message}`, {
+      extensions: {
+        code: 'BAD_USER_INPUT',
+        invalidArgs: name,
+        error
+      }
+    })
+  })
 }
 
 const resolvers = {
@@ -43,20 +51,48 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      const bookExists = await Book.exists({ title: args.title })
+      const { title, author: authorName } = args
 
-      if (bookExists) {
-        throw new GraphQLError(`Book already exists: ${args.title}`, {
+      if (title.length < 5) {
+        throw new GraphQLError(`Book title too short: ${title}`, {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.title
+            invalidArgs: title
           }
         })
       }
 
-      const author = await getAuthor(args.author)
+      if (authorName.length < 5) {
+        throw new GraphQLError(`Author name too short: ${authorName}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: authorName
+          }
+        })
+      }
+
+      const bookExists = await Book.exists({ title })
+
+      if (bookExists) {
+        throw new GraphQLError(`Book already exists: ${title}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: title
+          }
+        })
+      }
+
+      const author = await getAuthor(authorName)
       const book = new Book({ ...args, author: author._id })
-      const savedBook = await book.save()
+      const savedBook = await book.save().catch(error => {
+        throw new GraphQLError(`Failed to create book: ${error.message}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: title,
+            error
+          }
+        })
+      })
       return savedBook.populate('author')
     },
     editAuthor: (root, args) => {
