@@ -49,7 +49,10 @@ const resolvers = {
     },
     allAuthors: async () => {
       return Author.find({})
-    } 
+    },
+    me: async (root, args, context) => {
+      return context.currentUser
+    }
   },
   Mutation: {
     addBook: async (root, args) => {
