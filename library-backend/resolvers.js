@@ -1,6 +1,8 @@
 const { GraphQLError } = require('graphql')
+const jwt = require('jsonwebtoken')
 const Author = require('./models/author')
 const Book = require('./models/book')
+const User = require('./models/user')
 
 const getAuthor = async (name) => {
   const author = await Author.findOne({ name })
@@ -97,9 +99,23 @@ const resolvers = {
           }
         })
       }
-      
+
       return author
-    }
+    },
+    createUser: async (root, args) => {
+      const { username, favoriteGenre } = args
+      const user = new User({ username, favoriteGenre })
+
+      return user.save().catch(error => {
+        throw new GraphQLError(`Failed to create user: ${error.message}`, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: username,
+            error
+          }
+        })
+      })
+    },
   }
 }
 
