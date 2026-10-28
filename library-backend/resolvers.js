@@ -55,7 +55,15 @@ const resolvers = {
     }
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, {currentUser}) => {
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          extensions: {
+            code: 'UNAUTHENTICATED'
+          }
+        })
+      }
+
       const { title, author: authorName } = args
 
       const bookExists = await Book.exists({ title })
@@ -82,7 +90,13 @@ const resolvers = {
       })
       return savedBook.populate('author')
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError('not authenticated', {
+          code: 'UNAUTHENTICATED'
+        })
+      }
+
       const author = await Author.findOne({ name: args.name })
 
       if (!author) {
