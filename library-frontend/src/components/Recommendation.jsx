@@ -17,7 +17,7 @@ const Recommendation = (props) => {
     return <div>Loading...</div>
   }
 
-  const books = booksResult.data.allBooks
+  const books = booksResult.data?.allBooks ?? []
 
   return (
     <div>

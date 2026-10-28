@@ -47,11 +47,14 @@ const App = () => {
 
       <Books show={page === 'books'} />
 
-      <NewBook show={page === 'add'} />
+      {token && <>
+        <NewBook show={page === 'add'} />
+        <Recommendation show={page === 'recommend'} />
+      </>}
 
-      <Recommendation show={page === 'recommend'} />
-
-      <LoginForm show={page === 'login'} setError={notify} setToken={setToken} setPage={setPage} />
+      {!token && <>
+        <LoginForm show={page === 'login'} setError={notify} setToken={setToken} setPage={setPage} />
+      </>}
     </div>
   )
 }
