@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useMutation } from "@apollo/client/react"
 import { LOGIN } from "../queries"
 
-const LoginForm = ({ show, setToken, setPage }) => {
+const LoginForm = ({ show, setError, setToken, setPage }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -14,6 +14,9 @@ const LoginForm = ({ show, setToken, setPage }) => {
       setUsername('')
       setPassword('')
       setPage('authors')
+    },
+    onError: (error) => {
+      setError(`login failed: ${error.message}`)
     }
   })
 
@@ -28,7 +31,7 @@ const LoginForm = ({ show, setToken, setPage }) => {
     <div>
       <form onSubmit={submit}>
         <label>
-          name
+          username
           <input value={username} onChange={(e) => setUsername(e.target.value)} />
         </label>
         <br />
