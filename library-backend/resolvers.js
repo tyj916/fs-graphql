@@ -39,7 +39,8 @@ const resolvers = {
 
       const author = await getAuthor(args.author)
       const book = new Book({ ...args, author: author._id })
-      return book.save()
+      const savedBook = await book.save()
+      return savedBook.populate('author')
     },
     editAuthor: (root, args) => {
       // tba
