@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 
-import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client'
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 
 const client = new ApolloClient({
@@ -10,21 +10,6 @@ const client = new ApolloClient({
     uri: 'http://localhost:4000',
   }),
   cache: new InMemoryCache(),
-})
-
-const query = gql`
-  query {
-    allAuthors {
-      name
-      born
-      id
-      bookCount
-    }
-  }
-`
-
-client.query({ query }).then((response) => {
-  console.log(response.data)
 })
 
 createRoot(document.getElementById('root')).render(
