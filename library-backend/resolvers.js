@@ -19,12 +19,23 @@ const resolvers = {
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       const { author, genre } = args
-      const allBooks = await Book.find({}).populate('author')
+      const filter = {}
 
-      return allBooks.filter(book =>
-        (!author || book.author.name === author) &&
-        (!genre || book.genres.includes(genre))
-      )
+      if (author) {
+        const authorObject = await Author.findOne({ name: author })
+
+        if (!authorObject) {
+          return [] // no matching author, just return empty array
+        }
+
+        filter.author = authorObject._id
+      }
+
+      if (genre) {
+        filter.genres = genre
+      }
+
+      return Book.find(filter).populate('author')
     },
     allAuthors: async () => {
       return Author.find({})
