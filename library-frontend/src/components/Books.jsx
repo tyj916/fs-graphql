@@ -45,6 +45,8 @@ const Books = (props) => {
     <div>
       <h2>books</h2>
 
+      {genre && <p>in genre <strong>{genre}</strong></p>}
+
       <table>
         <tbody>
           <tr>
