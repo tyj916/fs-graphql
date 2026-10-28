@@ -30,7 +30,7 @@ const App = () => {
         </>}
       </div>
 
-      <Authors show={page === 'authors'} />
+      <Authors show={page === 'authors'} token={token} />
 
       <Books show={page === 'books'} />
 
