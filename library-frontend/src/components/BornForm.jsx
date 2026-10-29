@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client/react"
 import { EDIT_BORN } from "../queries"
 
 const BornForm = ({ authors }) => {
-  const [name, setName] = useState('')
+  const [name, setName] = useState(authors[0].name)
   const [born, setBorn] = useState('')
   const [editBorn] = useMutation(EDIT_BORN)
 
