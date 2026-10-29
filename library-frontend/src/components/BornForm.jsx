@@ -15,7 +15,6 @@ const BornForm = ({ authors }) => {
       born: +born, 
     } })
 
-    setName('')
     setBorn('')
   }
 
