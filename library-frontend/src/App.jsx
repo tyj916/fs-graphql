@@ -21,6 +21,7 @@ const App = () => {
   }
 
   const onLogout = () => {
+    setPage('authors')
     setToken(null)
     localStorage.clear()
     client.resetStore()
