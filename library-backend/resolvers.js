@@ -1,8 +1,12 @@
 const { GraphQLError } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
+
 const Author = require('./models/author')
 const Book = require('./models/book')
 const User = require('./models/user')
+
+const pubsub = new PubSub()
 
 const getAuthor = async (name) => {
   const author = await Author.findOne({ name })
@@ -88,7 +92,10 @@ const resolvers = {
 
       const author = await getAuthor(authorName)
       const book = new Book({ ...args, author: author._id })
-      const savedBook = await book.save().catch(error => {
+
+      try {
+        await book.save()
+      } catch (error) {
         throw new GraphQLError(`Failed to create book: ${error.message}`, {
           extensions: {
             code: 'BAD_USER_INPUT',
@@ -96,8 +103,11 @@ const resolvers = {
             error
           }
         })
-      })
-      return savedBook.populate('author')
+      }
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+
+      return book.populate('author')
     },
     editAuthor: async (root, args, { currentUser }) => {
       if (!currentUser) {
@@ -160,6 +170,11 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) }
     },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED')
+    }
   }
 }
 
