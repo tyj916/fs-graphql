@@ -52,19 +52,15 @@ const resolvers = {
       return Book.find(filter).populate('author')
     },
     allAuthors: async () => {
-      const authors = await Author.find({})
-      const books = await Book.find({})
-
-      const authorsWithBookCount = authors.map(author => ({
-        ...author.toObject(),
-        id: author._id.toString(),
-        bookCount: books.filter(book => book.author.toString() === author.id).length
-      }))
-
-      return authorsWithBookCount
+      return Author.find({})
     },
     me: async (root, args, context) => {
       return context.currentUser
+    }
+  },
+  Author: {
+    bookCount: async (root) => {
+      return Book.countDocuments({ author: root._id })
     }
   },
   Mutation: {
