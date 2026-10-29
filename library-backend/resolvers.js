@@ -95,6 +95,7 @@ const resolvers = {
 
       try {
         await book.save()
+        await book.populate('author')
       } catch (error) {
         throw new GraphQLError(`Failed to create book: ${error.message}`, {
           extensions: {
@@ -107,7 +108,7 @@ const resolvers = {
 
       pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
-      return book.populate('author')
+      return book
     },
     editAuthor: async (root, args, { currentUser }) => {
       if (!currentUser) {
